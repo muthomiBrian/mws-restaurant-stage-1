@@ -158,10 +158,23 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
 
+  const picture = document.createElement('picture');
+  const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).slice(0,-4);
+  const sourceQueries = {
+    source1: ['(min-width: 624px)'],
+    source2: ['(min-width: 421px)']
+  };
+  const sourceSrcSets = {
+    source1: `${imgSrc}-400_1x.jpg 400w, ${imgSrc}-800_2x.jpg 800w`,
+    source2: `${imgSrc}-800_2x.jpg 800w`
+  };
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  li.append(image);
+  image.srcset = `${imgSrc}-400_1x.jpg`;
+  image.alt = restaurant.alt;
+  picture.innerHTML = sourceTags(sourceQueries, sourceSrcSets);
+  picture.append(image);
+  li.append(picture);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
@@ -209,3 +222,14 @@ addMarkersToMap = (restaurants = self.restaurants) => {
   });
 } */
 
+// add source tags with the correct media and srcset
+function sourceTags(requiredSources, sourceSrcSets) {
+  const sources = Object.keys(requiredSources).map((source) => {
+    return requiredSources[source].reduce((accumulator, tag) => {
+      return accumulator + `<source srcset="${sourceSrcSets[source]}" media="${tag}">`
+    }, '')
+  }).reduce((accumulator, group) => {
+    return accumulator + group
+  }, '')
+  return sources
+}

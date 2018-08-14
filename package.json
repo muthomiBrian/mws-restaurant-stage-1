@@ -1,0 +1,28 @@
+{
+  "name": "restaurant-reviews-stage-1",
+  "version": "1.0.0",
+  "description": "First project of the mobile web specialist nano-degree",
+  "main": "grunt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udacity/mws-restaurant-stage-1.git"
+  },
+  "author": "Brian Muthomi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/udacity/mws-restaurant-stage-1/issues"
+  },
+  "homepage": "https://github.com/udacity/mws-restaurant-stage-1#readme",
+  "devDependencies": {
+    "grunt": "^1.0.3",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-contrib-copy": "~0.8.0",
+    "grunt-contrib-nodeunit": "~0.4.1",
+    "grunt-contrib-uglify": "~0.5.0",
+    "grunt-mkdir": "~0.1.2",
+    "grunt-responsive-images": "^1.10.1"
+  }
+}

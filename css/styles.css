@@ -4,7 +4,7 @@ html,
 body, 
 header,
 main {
-  width: 100%
+  width: 100%;
 }
 body,
 td,
@@ -46,6 +46,14 @@ h6 {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 0 20px;
 }
+
+table, td, tr {
+  display: block;
+}
+
+td:nth-child(1) {
+  text-decoration: underline;
+}
 article, 
 aside, 
 canvas, 
@@ -69,7 +77,7 @@ section {
   color: #aaa;
   font-size: 8pt;
   letter-spacing: 1px;
-  padding: 25px;
+  padding: 15px;
   text-align: center;
   text-transform: uppercase;
 }
@@ -124,7 +132,7 @@ nav h1 a {
 }
 /* ====================== Map ====================== */
 #map {
-  height: 400px;
+  height: 50vh;
   width: 100%;
   background-color: #ccc;
 }
@@ -179,8 +187,6 @@ nav h1 a {
   display: block;
   margin: 0;
   max-width: 100%;
-  min-height: 248px;
-  min-width: 100%;
   border-top-left-radius: 20px;
 }
 #restaurants-list li h1 {
@@ -319,8 +325,115 @@ nav h1 a {
   border-top-left-radius: 20px;
 }
 
-@media screen and (min-width: 404px) {
+@media screen and (min-width: 403px) {
   nav h1 a {
     font-size: 0.7em;
+  }
+  .filter-options select {
+    width: calc((100% - 60px)/2);
+  }
+  #cuisines-select {
+    float: right;
+    margin-left: 0;
+  }
+}
+
+@media screen and (min-width: 424px) {
+  table {
+    display: table;
+  }
+  tr {
+    display: table-row;
+  }
+  td {
+    display: table-cell;
+    text-decoration: none !important;
+  }
+}
+
+@media screen and (min-width: 460px) {
+  #restaurant-container, #reviews-container {
+    padding: 20px 40px;
+  }
+}
+
+@media screen and (min-width: 624px) {
+  #restaurants-list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #restaurants-list li {
+    width: calc((100% - 50px)/2);
+  }
+}
+
+@media screen and (min-width: 850px) {
+  footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 2000;
+  }
+
+  #maincontent {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  #map {
+    height: 90vh;
+  }
+
+  #map-container {
+    width: 60%;
+    order: 2;
+  }
+
+  .inside #map-container {
+    width: 60%;
+    height: 80vh;
+    overflow: hidden;
+    order: 2;
+  }
+
+  .inside #not-map {
+    width: 40%;
+    height: 80vh;
+    overflow: scroll;
+  }
+
+  #maincontent > section:nth-child(2) {
+    width: 40%;
+    
+  }
+
+  #restaurants-list {
+    height: 70vh;
+    overflow: scroll;
+  }
+
+  #restaurants-list li {
+    position: relative;
+    padding-bottom: 35px;
+  }
+
+  #restaurants-list li a {
+    position: absolute;
+    bottom: 0;
+  }
+
+  #restaurants-list li {
+    width: calc(100% - 20px);
+  }
+
+  
+
+}
+
+@media screen and (min-width: 1000px) {
+  #restaurants-list li {
+    width: calc((100% - 50px)/2);
   }
 }
