@@ -203,7 +203,7 @@ nav h1 a {
   border-top-left-radius: 20px;
   border-bottom-right-radius: 20px;
   position: relative;
-  padding-bottom: 20px;
+  padding-bottom: 50px;
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
