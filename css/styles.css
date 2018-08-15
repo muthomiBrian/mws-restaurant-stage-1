@@ -313,6 +313,7 @@ nav h1 a {
   padding: 0 0 20px;
   width: 100%;
   border-top-left-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 #reviews-list li p {
   margin: 0 0 10px;
