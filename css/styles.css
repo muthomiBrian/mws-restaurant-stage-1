@@ -201,6 +201,9 @@ nav h1 a {
   width: calc(100% - 20px);
   margin: 10px;
   border-top-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  position: relative;
+  padding-bottom: 20px;
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
@@ -238,6 +241,9 @@ nav h1 a {
   text-align: center;
   text-decoration: none;
   text-transform: uppercase;
+  position: absolute;
+  bottom: 0;
+  border-bottom-right-radius: 20px;
 }
 
 /* ====================== Restaurant Details ====================== */
