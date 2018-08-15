@@ -1,6 +1,6 @@
-const staticCacheName = 'mws-restaurant-stage-1-static-v3';
-const contentImgsCache = 'mws-restaurant-stage-1-imgs-v3';
-const mapCache = 'mws-restaurant-stage-1-map-v3';
+const staticCacheName = 'mws-restaurant-stage-1-static-v4';
+const contentImgsCache = 'mws-restaurant-stage-1-imgs-v4';
+const mapCache = 'mws-restaurant-stage-1-map-v4';
 const allCaches = [
   staticCacheName,
   contentImgsCache,
