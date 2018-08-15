@@ -1,6 +1,6 @@
-const staticCacheName = 'mws-restaurant-stage-1-static-v1';
-const contentImgsCache = 'mws-restaurant-stage-1-imgs';
-const mapCache = 'mws-restaurant-stage-1-map';
+const staticCacheName = 'mws-restaurant-stage-1-static-v3';
+const contentImgsCache = 'mws-restaurant-stage-1-imgs-v3';
+const mapCache = 'mws-restaurant-stage-1-map-v3';
 const allCaches = [
   staticCacheName,
   contentImgsCache,
@@ -12,7 +12,7 @@ self.addEventListener('install', function(event) {
     caches.open(staticCacheName).then(function(cache) {
       return cache.addAll([
         '.',
-        'restaurant.html',
+        '/restaurant.html',
         'js/main.js',
         'js/dbhelper.js',
         'js/restaurant_info.js',
@@ -24,6 +24,7 @@ self.addEventListener('install', function(event) {
     })
   );
 });
+
 self.addEventListener('activate', function(event) {
   event.waitUntil(
     caches.keys().then(function(cacheNames) {
@@ -57,6 +58,18 @@ self.addEventListener('fetch', function(event) {
 
   event.respondWith(
     caches.match(event.request).then(function(response) {
+      if (event.request.url.includes('?id=')) {
+        const storageUrl = event.request.url.replace(/\?id=[0-9]$/,'');
+        return caches.open(staticCacheName).then((cache) => {
+          return cache.match(storageUrl).then((response) => {
+            if (response) return response;
+            return fetch(event.request).then((networkResponse) => {
+              cache.put(storageUrl, networkResponse.clone());
+              return networkResponse;
+            });
+          });
+        });
+      }
       return response || fetch(event.request);
     })
   );

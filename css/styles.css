@@ -1,7 +1,7 @@
 @charset "utf-8";
 /* CSS Document */
-html, 
-body, 
+html,
+body,
 header,
 main {
   width: 100%;
@@ -21,7 +21,7 @@ body {
   margin: 0;
   height: 100%;
 }
-ul, 
+ul,
 li {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 16px;
@@ -31,7 +31,7 @@ a {
 	color: orange;
 	text-decoration: none;
 }
-a:hover, 
+a:hover,
 a:focus {
 	color: #3397DB;
 	text-decoration: none;
@@ -39,18 +39,18 @@ a:focus {
 a img{
 	border: none 0px #fff;
 }
-h1, 
-h2, 
-h3, 
-h4, 
-h5, 
+h1,
+h2,
+h3,
+h4,
+h5,
 h6 {
   font-family: Arial, Helvetica, sans-serif;
   margin: 0 0 20px;
 }
 
-table, 
-td, 
+table,
+td,
 tr {
   display: block;
 }
@@ -62,17 +62,17 @@ th {
 td:nth-child(1) {
   text-decoration: underline;
 }
-article, 
-aside, 
-canvas, 
-details, 
-figcaption, 
-figure, 
-footer, 
-header, 
-hgroup, 
-menu, 
-nav, 
+article,
+aside,
+canvas,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
 section {
 	display: block;
 }
@@ -111,7 +111,7 @@ nav h1 a {
   font-size: 0.8em;
   font-weight: 200;
   letter-spacing: 10px;
-  text-transform: uppercase;  
+  text-transform: uppercase;
 }
 #breadcrumb {
     list-style: none;
@@ -279,7 +279,7 @@ nav h1 a {
   text-transform: uppercase;
 	width: 100%;
 }
-#restaurant-container, 
+#restaurant-container,
 #reviews-container {
   border-bottom: 1px solid #d9d9d9;
   border-top: 1px solid #fff;
@@ -365,7 +365,8 @@ nav h1 a {
   tr {
     display: table-row;
   }
-  td {
+  td,
+  th {
     display: table-cell;
     text-decoration: none !important;
   }
@@ -396,7 +397,7 @@ nav h1 a {
     width: 100%;
     z-index: 2000;
   }
-  
+
   /* body {
     overflow: hidden;
   } */
@@ -420,7 +421,7 @@ nav h1 a {
     position: fixed;
     height: 100%;
     overflow: hidden;
-    order: 2; 
+    order: 2;
   }
 
   .inside #map-container {
@@ -459,7 +460,7 @@ nav h1 a {
   #restaurants-list li {
     width: calc(100% - 20px);
   }
-  
+
   .filter-options {
     position: fixed;
     width: 40%;
