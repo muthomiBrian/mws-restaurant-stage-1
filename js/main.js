@@ -80,9 +80,9 @@ initMap = () => {
   L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
     mapboxToken: 'pk.eyJ1IjoibXV0aG9taWJyaWFuIiwiYSI6ImNqamw1azFycDFkbWgzcHJsaWM5dnIydXMifQ.cobfZ2wrUlLJIjXgMNlT0A',
     maxZoom: 18,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-      'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/" tabindex="-1">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/" tabindex="-1">CC-BY-SA</a>, ' +
+      'Imagery © <a href="https://www.mapbox.com/" tabindex="-1">Mapbox</a>',
     id: 'mapbox.streets'
   }).addTo(newMap);
 
@@ -157,26 +157,20 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.setAttribute('role', 'option');
+  li.setAttribute('tabindex', -1);
+  li.setAttribute('aria-label', restaurant.name);
 
-  const picture = document.createElement('picture');
   const imgSrc = DBHelper.imageUrlForRestaurant(restaurant).slice(0,-4);
-  const sourceQueries = {
-    source1: ['(min-width: 624px)'],
-    source2: ['(min-width: 421px)']
-  };
-  const sourceSrcSets = {
-    source1: `${imgSrc}-400_1x.jpg 400w, ${imgSrc}-800_2x.jpg 800w`,
-    source2: `${imgSrc}-800_2x.jpg 800w`
-  };
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.srcset = `${imgSrc}-400_1x.jpg`;
+  image.src = `${imgSrc}-400_1x.jpg`;
+  image.srcset = `${imgSrc}-400_1x.jpg 400w, ${imgSrc}-800_2x.jpg 800w`;
+  image.sizes = '(min-width: 850px) calc(40vw - 20px), calc(100vw - 20px)';
   image.alt = restaurant.alt;
-  picture.innerHTML = sourceTags(sourceQueries, sourceSrcSets);
-  picture.append(image);
-  li.append(picture);
+  li.append(image);
 
-  const name = document.createElement('h1');
+  const name = document.createElement('h3');
   name.innerHTML = restaurant.name;
   li.append(name);
 
@@ -232,4 +226,15 @@ function sourceTags(requiredSources, sourceSrcSets) {
     return accumulator + group
   }, '')
   return sources
+}
+
+/*
+ implement service worker
+*/
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(function(reg) {
+    console.log('Registration succeeded');
+  }).catch(function(error) {
+    console.log('Registration failed with ' + error);
+  });
 }

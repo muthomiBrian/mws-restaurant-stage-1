@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -15,28 +15,28 @@
   <header>
     <nav>
       <h1><a href="/">Restaurant Reviews</a></h1>
+      <a href="#restaurants" class="screen-hidden">Skip to main content</a>
     </nav>
   </header>
 
   <main id="maincontent">
-    <section id="map-container">
-      <div id="map" role="application"></div>
+    <section id="map-container" tabindex="-1">
+      <div id="map" role="application" aria-label="map"></div>
     </section>
-    <section>
-      <form class="filter-options">
-        <h2 id="filterResults">Filter Results</h2>
-        <select id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+    <section class="not-map">
+      <div id="restaurants" class="filter-options">
+        <h2 id="filterResults">Filter Restaurants</h2>
+        <select aria-label="Select neighborhood" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
           <option value="all">All Neighborhoods</option>
         </select>
-        <select id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
+        <select aria-label="Select cuisine" id="cuisines-select" name="cuisines" onchange="updateRestaurants()">
           <option value="all">All Cuisines</option>
         </select>
-      </form>
-      <ul id="restaurants-list"></ul>
+      </div>
+      <ul id="restaurants-list" role="listbox" aria-label="Restaurants" tabindex="-1"></ul>
     </section>
   </main>
   <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
-  <script src="js/picturefill.min.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
   <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
   <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script> -->

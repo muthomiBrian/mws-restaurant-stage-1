@@ -24,9 +24,9 @@ initMap = () => {
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
         mapboxToken: 'pk.eyJ1IjoibXV0aG9taWJyaWFuIiwiYSI6ImNqamw1azFycDFkbWgzcHJsaWM5dnIydXMifQ.cobfZ2wrUlLJIjXgMNlT0A',
         maxZoom: 18,
-        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-          '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-          'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/" tabindex="-1">OpenStreetMap</a> contributors, ' +
+          '<a href="https://creativecommons.org/licenses/by-sa/2.0/" tabindex="-1">CC-BY-SA</a>, ' +
+          'Imagery © <a href="https://www.mapbox.com/" tabindex="-1">Mapbox</a>',
         id: 'mapbox.streets'    
       }).addTo(newMap);
       fillBreadcrumb();
@@ -110,6 +110,14 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
  */
 fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => {
   const hours = document.getElementById('restaurant-hours');
+  const rowHeading = document.createElement('tr');
+  const dayHeading = document.createElement('th');
+  const timeHeading = document.createElement('th');
+  dayHeading.innerHTML = 'Day';
+  timeHeading.innerHTML = 'Open';
+  rowHeading.appendChild(dayHeading);
+  rowHeading.appendChild(timeHeading);
+  hours.appendChild(rowHeading);
   for (let key in operatingHours) {
     const row = document.createElement('tr');
 
@@ -141,6 +149,7 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     return;
   }
   const ul = document.getElementById('reviews-list');
+  ul.setAttribute('role','list');
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -183,7 +192,9 @@ createReviewHTML = (review) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
-  li.innerHTML = restaurant.name;
+  li.setAttribute('aria-label', `${restaurant.name}`);
+  li.setAttribute('aria-current', 'page')
+  li.innerHTML = `${restaurant.name}`;
   breadcrumb.appendChild(li);
 }
 
