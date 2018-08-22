@@ -8,26 +8,76 @@ class DBHelper {
    */
   static get DATABASE_URL() {
     const port = 8000; // Change this to your server port
-    return './data/restaurants.json';
+    return 'http://localhost:1337/restaurants';
+  }
+
+  /**
+   * Implement IndexDB API using idb
+   */
+  static openRestaurantDB() {
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    return idb.open('restaurantDB', 1, function(upgradeDb) {
+      const restaurantStore = upgradeDb.createObjectStore('restaurants', {
+        keyPath: 'name'
+      })
+    })
+  }
+
+  static getRestaurantsFromDB(){
+    return DBHelper.openRestaurantDB().then((db) => {
+      if (!db) return;
+      const tx = db.transaction('restaurants');
+      const restaurantsStore = tx.objectStore('restaurants');
+      return restaurantsStore.getAll().then((restaurants) => {
+        return restaurants;
+      });
+    })
+  }
+
+  static storeRestaurants(restaurants){
+    DBHelper.openRestaurantDB().then((db) => {
+      if(!db) return;
+      const tx = db.transaction('restaurants','readwrite');
+      const restaurantsStore = tx.objectStore('restaurants');
+      const restaurantKeys = Object.keys(restaurants);
+      restaurantKeys.forEach((restaurantKey) => {
+        restaurantsStore.put(restaurants[restaurantKey])
+      })
+    })
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
-        callback(error, null);
-      }
-    };
-    xhr.send();
+    // let xhr = new XMLHttpRequest();
+    // xhr.open('GET', DBHelper.DATABASE_URL);
+    // xhr.onload = () => {
+    //   if (xhr.status === 200) { // Got a success response from server!
+    //     const json = JSON.parse(xhr.responseText);
+    //     const restaurants = json.restaurants;
+    //     callback(null, restaurants);
+    //   } else { // Oops!. Got an error from server.
+    //     const error = (`Request failed. Returned status of ${xhr.status}`);
+    //     callback(error, null);
+    //   }
+    // };
+    // xhr.send();
+    let restaurants;
+    let error;
+    return DBHelper.getRestaurantsFromDB()
+      .then((restaurants) => {
+        if (restaurants.length < 1) return fetch(DBHelper.DATABASE_URL).then(res => res.json());
+        return restaurants;
+      })
+      .then(restaurants => {
+
+        DBHelper.storeRestaurants(restaurants);
+        return callback(null, restaurants)
+      })
+      .catch(err => callback(err, null));
   }
 
   /**
@@ -149,7 +199,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`/img/${restaurant.id}`);
   }
 
   /**
@@ -175,6 +225,23 @@ class DBHelper {
     );
     return marker;
   } */
+
+  static getAltText(id){
+    const altText = {
+      '1':'people seated in restaurant',
+      '2':'pizza on plate',
+      '3':'restaurant with wooden furniture',
+      '4':'Katz\'s Delicatessen store front',
+      '5':'people seated at Roberta\'s Pizza',
+      '6':'people seated at Hometown BBQ',
+      '7':'Superiority burger store front',
+      '8':'The Dutch',
+      '9':'Customers eating',
+      '10':'Steel top table'
+    };
+
+    return altText[id]
+  }
 
 }
 

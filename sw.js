@@ -1,6 +1,6 @@
-const staticCacheName = 'mws-restaurant-stage-1-static-v4';
-const contentImgsCache = 'mws-restaurant-stage-1-imgs-v4';
-const mapCache = 'mws-restaurant-stage-1-map-v4';
+const staticCacheName = 'mws-restaurant-stage-1-static-v5';
+const contentImgsCache = 'mws-restaurant-stage-1-imgs-v5';
+const mapCache = 'mws-restaurant-stage-1-map-v5';
 const allCaches = [
   staticCacheName,
   contentImgsCache,
@@ -16,8 +16,8 @@ self.addEventListener('install', function(event) {
         './js/main.js',
         './js/dbhelper.js',
         './js/restaurant_info.js',
+        './js/idb.js',
         './css/styles.css',
-        './data/restaurants.json',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
         'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css'
       ]);
@@ -59,18 +59,18 @@ self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request).then(function(response) {
       if (event.request.url.includes('?id=')) {
-        const storageUrl = event.request.url.replace(/\?id=[0-9]$/,'');
+        const storageUrl = event.request.url.replace(/\?id=[0-9]+$/,'');
         return caches.open(staticCacheName).then((cache) => {
           return cache.match(storageUrl).then((response) => {
             if (response) return response;
             return fetch(event.request).then((networkResponse) => {
               cache.put(storageUrl, networkResponse.clone());
               return networkResponse;
-            });
+            }).catch(e => console.log(e));
           });
         });
       }
-      return response || fetch(event.request);
+      return response || fetch(event.request).catch(e => console.log(e));
     })
   );
 });
@@ -82,7 +82,7 @@ function serveMapImg(request){
       return fetch(request).then((networkResponse) => {
         cache.put(request.url, networkResponse.clone());
         return networkResponse;
-      });
+      }).catch(e => console.log(e));
     });
   });
 };
@@ -96,7 +96,7 @@ function serveImg(request) {
       return fetch(request).then((networkResponse) => {
         cache.put(storageUrl, networkResponse.clone());
         return networkResponse;
-      });
+      }).catch(e => console.log(e));
     });
   });
 };
