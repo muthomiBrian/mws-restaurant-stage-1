@@ -3,19 +3,19 @@
   "name": "Restaurant Reviews",
   "icons": [
     {
-      "src": "/icons/mws_icons-01.png",
+      "src": "./icons/mws_icons-01.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/icons/mws_icons-02.png",
+      "src": "./icons/mws_icons-02.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
+  "start_url": "./",
   "background_color": "#333333",
   "display": "standalone",
-  "scope": "/",
+  "scope": "./",
   "theme_color": "#333333"
 }
