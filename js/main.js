@@ -68,21 +68,27 @@ const fillCuisinesHTML = (cuisines = self.cuisines) => {
  * Initialize leaflet map, called from HTML.
  */
 const initMap = () => {
-  self.newMap = L.map('map', {
-    center: [40.722216, -73.987501],
-    zoom: 12,
-    scrollWheelZoom: false
-  });
-  L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
-    mapboxToken: 'pk.eyJ1IjoibXV0aG9taWJyaWFuIiwiYSI6ImNqamw1azFycDFkbWgzcHJsaWM5dnIydXMifQ.cobfZ2wrUlLJIjXgMNlT0A',
-    maxZoom: 18,
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/" tabindex="-1">OpenStreetMap</a> contributors, ' +
-      '<a href="https://creativecommons.org/licenses/by-sa/2.0/" tabindex="-1">CC-BY-SA</a>, ' +
-      'Imagery © <a href="https://www.mapbox.com/" tabindex="-1">Mapbox</a>',
-    id: 'mapbox.streets'
-  }).addTo(newMap);
+  try {
+    self.newMap = L.map('map', {
+      center: [40.722216, -73.987501],
+      zoom: 12,
+      scrollWheelZoom: false
+    });
+    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
+      mapboxToken: 'pk.eyJ1IjoibXV0aG9taWJyaWFuIiwiYSI6ImNqamw1azFycDFkbWgzcHJsaWM5dnIydXMifQ.cobfZ2wrUlLJIjXgMNlT0A',
+      maxZoom: 18,
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/" tabindex="-1">OpenStreetMap</a> contributors, ' +
+        '<a href="https://creativecommons.org/licenses/by-sa/2.0/" tabindex="-1">CC-BY-SA</a>, ' +
+        'Imagery © <a href="https://www.mapbox.com/" tabindex="-1">Mapbox</a>',
+      id: 'mapbox.streets'
+    }).addTo(newMap);
 
+
+  } catch (error) {
+    console.log(error);
+  }
   updateRestaurants();
+
 };
 /* window.initMap = () => {
   let loc = {
@@ -151,6 +157,7 @@ const fillRestaurantsHTML = (restaurants = self.restaurants) => {
 /**
  * Create restaurant HTML.
  */
+
 const createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
   li.setAttribute('role', 'option');
@@ -178,10 +185,31 @@ const createRestaurantHTML = (restaurant) => {
   address.innerHTML = restaurant.address;
   li.append(address);
 
+  const options = document.createElement('div');
+  options.classList = 'options';
+
+  const fav = document.createElement('button');
+  console.log(restaurant);
+  if (restaurant.is_favorite) {
+    console.log('called')
+    fav.classList.add('favourite');
+  }
+  fav.innerHTML = '⍟ Favourite';
+  fav.id = `${restaurant.id}-fav`;
+  fav.addEventListener('mousedown', e => {
+    DBHelper.toggleFavourite(restaurant.id, e.target);
+    e.target.classList.toggle('favourite');
+  });
+  options.append(fav);
+
   const more = document.createElement('a');
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
-  li.append(more);
+  options.append(more);
+
+
+
+  li.append(options);
 
   return li;
 };

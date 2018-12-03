@@ -1,5 +1,21 @@
 var newMap;
 
+const restaurantTemp = (() => {
+  function restaurantTemp(){}
+
+  restaurantTemp.restaurantObj = {};
+
+  restaurantTemp.set = (restObj) => {
+    return restaurantTemp.restaurantObj = restObj;
+  };
+
+  restaurantTemp.get = () => {
+    return restaurantTemp.restaurantObj;
+  };
+
+  return restaurantTemp;
+})();
+
 /**
  * Initialize map as soon as the page is loaded.
  */
@@ -50,6 +66,7 @@ const initMap = () => {
   });
 } */
 
+
 /**
  * Get current restaurant from page URL.
  */
@@ -81,6 +98,12 @@ const fetchRestaurantFromURL = (callback) => {
 const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
+
+  if (restaurant.is_favorite) {
+    document.querySelector('.restaurant-favourite').classList.add('favourite');
+  }
+
+  restaurantTemp.set(restaurant);
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
@@ -139,7 +162,8 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  title.classList.add('reviews-title');
+  container.insertAdjacentElement('afterbegin',title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -152,6 +176,7 @@ const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
+
   container.appendChild(ul);
 };
 
@@ -212,3 +237,8 @@ const getParameterByName = (name, url) => {
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
+
+document.querySelector('.restaurant-favourite').addEventListener('mouseup', e => {
+  e.target.classList.toggle('favourite');
+  DBHelper.toggleFavourite(restaurantTemp.get().id, e.target);
+});
