@@ -84,9 +84,7 @@ const initMap = () => {
     }).addTo(newMap);
 
 
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {};
   updateRestaurants();
 
 };
@@ -189,9 +187,8 @@ const createRestaurantHTML = (restaurant) => {
   options.classList = 'options';
 
   const fav = document.createElement('button');
-  console.log(restaurant);
-  if (restaurant.is_favorite) {
-    console.log('called')
+  console.log(restaurant.id, restaurant.is_favorite)
+  if (restaurant.is_favorite === 'true' || restaurant.is_favorite === true) {
     fav.classList.add('favourite');
   }
   fav.innerHTML = '⍟ Favourite';

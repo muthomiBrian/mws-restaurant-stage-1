@@ -41,50 +41,55 @@
       <div id="map" role="application"></div>
     </section>
     <!-- End map -->
-    <!-- Beginning restaurant -->
-    <section id="restaurant-container" class="not-map">
-      <h2 id="restaurant-name"></h2>
-      <img id="restaurant-img">
-      <p id="restaurant-cuisine"></p>
-      <button class="restaurant-favourite">⍟ Favourite</button>
-      <p id="restaurant-address"></p>
-      <table id="restaurant-hours" aria-label="Open times">
-      </table>
-    </section>
-    <!-- end restaurant -->
-    <!-- Beginning reviews -->
-    <section id="reviews-container" class="not-map">
-      <form action="" id="reviews-form" hidden>
-        <div class="form-header">
-          <span class="review-header">Add review</span>
-          <button type="button" class="close-review">x</button>
-        </div>
-        <div class="input-group restaurantRating">
-          <span class="restaurantID">
-            <label for="name">Name</label>
-            <input type="text" name="name" id="name">
-          </span>
-          <span class="rating">
-            <label for="rating">Rating</label>
-            <select name="rating" id="rating">
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
-          </span>
-        </div>
-        <div class="input-group">
-          <label for="review">Review</label>
-          <textarea name="review" id="review"></textarea>
-        </div>
-        <button type="submit" class="send-review">Send</button>
-      </form>
-      <button class="show-review-form">Add review</button>
-      <ul id="reviews-list"></ul>
-    </section>
-    <!-- End reviews -->
+    <div id="sidebar-restaurant">
+      <!-- Beginning restaurant -->
+
+    <section id="restaurant-container">
+        <h2 id="restaurant-name"></h2>
+        <img id="restaurant-img">
+        <p id="restaurant-cuisine"></p>
+        <button class="restaurant-favourite">⍟ Favourite</button>
+        <p id="restaurant-address"></p>
+        <table id="restaurant-hours" aria-label="Open times">
+        </table>
+      </section>
+      <!-- end restaurant -->
+      <!-- Beginning reviews -->
+      <section id="reviews-container">
+        <form action="" id="reviews-form" hidden>
+          <div class="form-header">
+            <span class="review-header">Add review</span>
+            <button type="button" class="close-review">x</button>
+          </div>
+          <div class="input-group restaurantRating">
+            <span class="restaurantID">
+              <label for="name">Name</label>
+              <input type="text" name="name" id="name">
+            </span>
+            <span class="rating">
+              <label for="rating">Rating</label>
+              <select name="rating" id="rating">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </span>
+          </div>
+          <div class="input-group">
+            <label for="review">Review</label>
+            <textarea name="review" id="review"></textarea>
+          </div>
+          <button type="submit" class="send-review">Send</button>
+        </form>
+        <button class="show-review-form">Add review</button>
+        <ul id="reviews-list"></ul>
+      </section>
+      <!-- End reviews -->
+
+    </div>
+
   </main>
   <!-- End main -->
 

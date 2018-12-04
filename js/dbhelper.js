@@ -54,7 +54,7 @@ class DBHelper {
       const restaurantsStore = tx.objectStore('restaurants');
       const restaurantKeys = Object.keys(restaurants);
       restaurantKeys.forEach((restaurantKey) => {
-        restaurantsStore.put(restaurants[restaurantKey])
+        restaurantsStore.put(restaurants[restaurantKey]);
       });
     });
   }
@@ -223,18 +223,36 @@ class DBHelper {
     return DBHelper.storeReview(review)
       .then(() => {
         return DBHelper.sendReviewToServer(review);
+      }).then(() => {
+        DBHelper.updateServerReviews();
       });
+  }
+
+  static dash(string) {
+    if (string.includes(' ')) {
+      const newString = string.replace(' ', '-');
+      return DBHelper.dash(newString);
+    }
+
+    return string;
+  }
+
+  static hash(string) {
+    const start = Math.ceil(string.length/2);
+    const end = start +  Math.ceil(string.length/4 >= 6 ? 6 : string.length/4);
+    return string.substring(start, end);
   }
 
   static storeReview(review) {
     return DBHelper.openReviewsDB().then(db => {
       if (!db) return;
-      const unique =`${review.restaurant_id}-${Date.now()}`;
+      const unique =`${DBHelper.dash(DBHelper.hash(review.comments))}`;
       review.unique = unique;
       return db
         .transaction('reviews', 'readwrite')
         .objectStore('reviews')
-        .put(review);
+        .put(review)
+        .complete;
     });
   }
 
@@ -242,8 +260,7 @@ class DBHelper {
     return fetch('http://localhost:1337/reviews/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-        'X-Content-Type-Options': 'nosniff'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       body: JSON.stringify(review),
     })
@@ -257,8 +274,34 @@ class DBHelper {
   static getRestaurantReviews(restaurant_id) {
     return DBHelper.getRestaurantReviewsIdb(restaurant_id)
       .then(reviews => {
-        if (!review) return DBHelper.getRestaurantReviewsFromServer(restaurant_id);
-        return reviews;
+        return DBHelper.getRestaurantReviewsFromServer(restaurant_id)
+          .then(res => {
+            try {
+              [...reviews];
+            } catch (error) {
+              return [...res];
+            }
+            const negative = {};
+
+            reviews.forEach(review => {
+              negative[review.id] = review;
+              negative2[review.unique] = review;
+            });
+
+            const negative2 = {};
+
+            const knockOut = res.filter(review => {
+              return !negative[review.id];
+            });
+
+            const knockOut2 = knockOut.filter(review => {
+              return !negative2[review.unique];
+            });
+            return [...knockOut2, ...reviews];
+          })
+          .catch(err => {
+            return reviews;
+          });
       });
   }
 
@@ -273,6 +316,7 @@ class DBHelper {
       .then(reviews => {
         if (!reviews || reviews.length < 1) return;
         if (restaurant_id) {
+
           return reviews.filter(element => {
             return element.restaurant_id === restaurant_id;
           });
@@ -283,28 +327,21 @@ class DBHelper {
 
   static getRestaurantReviewsFromServer(restaurant_id) {
     return fetch(`http://localhost:1337/reviews/?restaurant_id=${restaurant_id}`)
-      .then(res => res.json);
+      .then(res => res.json())
+      .then(res => {
+        res.reduce((acc, review) => {
+          return acc.then(() => {
+            return DBHelper.storeReview(review);
+          });
+        }, Promise.resolve());
+
+        return res;
+      });
   }
 
   /**
    * Update reviews
    */
-  static updateReviews(review) {
-    return DBHelper.updateReviewsIdb(review)
-      .then(() => {
-        return DBHelper.updateReviewsServer(review);
-      });
-  }
-
-  static updateReviewsIdb(review){
-    return DBHelper.openRestaurantDB().then(db => {
-      if (!db) return;
-      return db
-        .transaction('reviews', 'readwrite')
-        .objectStore('reviews')
-        .put(review);
-    });
-  }
 
   static updateReviewsServer(review) {
     return fetch(`http://localhost:1337/reviews/${review.id}`, {
@@ -336,42 +373,14 @@ class DBHelper {
               rating: review.rating,
               comments: review.comments
             })
-              .then(res => res.json())
               .then(res => {
                 const changedReview = JSON.parse(JSON.stringify(review));
                 changedReview.id = res.id;
                 return DBHelper.updateReviewsIdb(changedReview);
               });
           });
-        }, Promise.resolve);
+        }, Promise.resolve());
       });
-  }
-
-  /**
-   * Delete reviews
-   */
-
-  static deleteReview(review) {
-    return DBHelper.deleteReviewIDB(review)
-      .then(() => {
-        if (!review.id) return;
-        return DBHelper.deleteReviewServer(review);
-      });
-  }
-
-  static deleteReviewIDB(review) {
-    return DBHelper.openReviewsDB().then(db => {
-      if (!db) return;
-      return db
-        .transaction('reviews', 'readwrite')
-        .objectStore('reviews')
-        .delete(review.unique);
-    });
-  }
-
-  static deleteReviewServer(review) {
-    return fetch(`http://localhost:1337/reviews/${review.id}`, {method: 'DELETE'})
-      .then(res => res.json());
   }
 
   /* static mapMarkerForRestaurant(restaurant, map) {
@@ -436,76 +445,4 @@ class DBHelper {
         });
       });
   }
-
-  static sendForm(review) {
-    const succeededReviews = [];
-    // get failed review adds in idb
-    return DBHelper.getfailedReviews().then(fReviews => {
-      if (fReviews.length < 1) return;
-      // send failed reviews first
-      return fReviews.reduce((p, f) => p.then(() => {
-        // store succeeded review in array by index
-        return this.sendReview(f)
-          .then(res => {
-            succeededReviews.push(f);
-            return res;
-          });
-      }), Promise.resolve());
-    }).then(() => {
-      // send new review last once the other fReviews succeed or there are no failed reviews
-      if (!review) return;
-      return this.sendReview(review);
-    }).catch(() => {
-      // if first failed review fails, add new review to idb failed reviews
-      return DBHelper.addFailedReview(review);
-    }).then(() => {
-      // delete all succeeded reviews from idb using indices
-      if (succeededReviews.length < 1) return;
-      return succeededReviews.reduce((acc, rev) => acc.then(() => {
-        return this.deleteFailed(rev);
-      }));
-    });
-  }
-
-  static getfailedReviews() {
-    return DBHelper.openReviewsDB().then(db => {
-      if (!db) return;
-      return db
-        .transaction('reviews')
-        .objectStore('reviews')
-        .getAll();
-    });
-  }
-
-  sendReview(review) {
-
-  }
-
-  retrySubmission() {
-    // when page reloads retry sending reviews starting with old ones first
-    return this.sendForm();
-  }
-
-  static addFailedReview(review) {
-    // send to db
-    return DBHelper.openReviewsDB().then(db => {
-      if (!db) return;
-      return db
-        .transaction('reviews', 'readwrite')
-        .objectStore('reviews')
-        .put(review);
-    });
-  }
-
-  static deleteFailed(review) {
-    return DBHelper.openReviewsDB().then(db => {
-      if (!db) return;
-      return db
-        .transaction('reviews', 'readwrite')
-        .objectStore('reviews')
-        .delete(review);
-    });
-  }
-
 }
-
