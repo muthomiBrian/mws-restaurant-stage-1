@@ -271,15 +271,15 @@ nav h1 a {
 
 .form-header {
   display: flex;
-  background: #333;
   margin-bottom: 20px;
-  padding: 5px 20px;
+  margin-top: 10px;
+  color: #744500;
 }
 
 .review-header {
   width: calc(100% - 38px);
-  font-size: 12pt;
-  color: #ddd;
+  font-size: 14pt;
+
   padding: 5px;
   font-weight: 300;
 }
@@ -288,8 +288,9 @@ nav h1 a {
   background: transparent;
   padding: 10px 15px;
   border: none;
-  font-size: 12pt;
-  color: #ddd;
+  font-size: 14pt;
+  border: 1px #744500 solid;
+  color: #744500;
 }
 
 .reviews-title {
