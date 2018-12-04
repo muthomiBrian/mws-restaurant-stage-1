@@ -253,12 +253,13 @@ nav h1 a {
   border: none;
   border-top: 1px #a37125 solid;
   position: absolute;
-  bottom: 3px;
+  bottom: 0;
   left: 0;
   width: 50%;
-  height: 44px;
+  height: 47px;
   border-bottom-left-radius: 20px;
   color: #744500;
+  border-bottom: 3px #f3f3f3 solid
 }
 
 #restaurants-list li button.favourite,
@@ -267,6 +268,7 @@ nav h1 a {
   border-top: 1px #ff6666 solid;
   background-color:#ff6666;
   color: #fff;
+  border-bottom: 3px #f3f3f3 solid;
 }
 
 .form-header {
