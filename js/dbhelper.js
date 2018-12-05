@@ -78,19 +78,22 @@ class DBHelper {
   /**
    * Fetch a restaurant by its ID.
    */
-  static fetchRestaurantById(id, callback) {
+  static fetchRestaurantById(id, callback = () => {}) {
     // fetch all restaurants with proper error handling.
-    DBHelper.fetchRestaurants((error, restaurants) => {
+    return DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
         callback(error, null);
       } else {
         const restaurant = restaurants.find(r => r.id == id);
         if (restaurant) { // Got the restaurant
           callback(null, restaurant);
+          return Promise.resolve(restaurant)
         } else { // Restaurant does not exist in the database
           callback('Restaurant does not exist', null);
+          return Promise.reject('Restaurant does not exist');
         }
       }
+
     });
   }
 
@@ -413,36 +416,26 @@ class DBHelper {
 
   static toggleFavourite(id, element) {
     if (element.classList.contains('favourite')) {
-      return DBHelper.setUnfavourite(id);
+      return DBHelper.setFavourite(id, false);
     }
-    return DBHelper.setFavourite(id);
+    return DBHelper.setFavourite(id, true);
   }
 
-  static setFavourite(id) {
-    return fetch(`${DBHelper.DATABASE_URL()}/${id}/?is_favorite=true`, {method: 'PUT'})
-      .then(res => res.json())
-      .then(res => {
-        return DBHelper.openRestaurantDB().then(db => {
-          if (!db) return;
-          return db
-            .transaction('restaurants','readwrite')
-            .objectStore('restaurants')
-            .put(res);
-        });
+  static setFavourite(id, boolean) {
+    return DBHelper.fetchRestaurantById(id).then(restaurant => {
+      if (!restaurant) return;
+      const changedRestaurant = JSON.parse(JSON.stringify(restaurant));
+      changedRestaurant.is_favorite = boolean;
+      return DBHelper.openRestaurantDB().then(db => {
+        if (!db) return;
+        return db
+          .transaction('restaurants','readwrite')
+          .objectStore('restaurants')
+          .put(changedRestaurant);
       });
-  }
+    }).then(() => {
+      return fetch(`${DBHelper.DATABASE_URL()}/${id}/?is_favorite=${boolean}`, {method: 'PUT'})
 
-  static setUnfavourite(id) {
-    return fetch(`${DBHelper.DATABASE_URL()}/${id}/?is_favorite=false`, {method: 'PUT'})
-      .then(res => res.json())
-      .then(res => {
-        return DBHelper.openRestaurantDB().then(db => {
-          if (!db) return;
-          return db
-            .transaction('restaurants','readwrite')
-            .objectStore('restaurants')
-            .put(res);
-        });
-      });
+    });
   }
 }

@@ -187,7 +187,6 @@ const createRestaurantHTML = (restaurant) => {
   options.classList = 'options';
 
   const fav = document.createElement('button');
-  console.log(restaurant.id, restaurant.is_favorite)
   if (restaurant.is_favorite === 'true' || restaurant.is_favorite === true) {
     fav.classList.add('favourite');
   }
